@@ -1,46 +1,51 @@
 import pygame
 import random
 
-game_width = 1152
-game_height = 648
+GAME_WIDTH = 1152
+GAME_HEIGHT = 648
 
-class Fish(pygame.sprite.Sprite):
-    def __init__(self,pos):
+class Ocean(pygame.sprite.Sprite):
+    def __init__(self,image):
         pygame.sprite.Sprite.__init__(self)
         # size is set by width then height
         self.randomize_size = random.randint(10,100)
-        self.size = [self.randomize_size*2.2,self.randomize_size]
+        self.size = [self.randomize_size*3,self.randomize_size]
         self.score = self.size[0] * self.size[1]
-        self.image = pygame.Surface(self.size)
-        self.image.fill((255, 0, 0))
-        self.pos = pos
+        self.pos = [GAME_WIDTH + self.size[0],random.randint(200,500)]
+        self.image = image
         self.rect = self.image.get_rect()
-        self.rect.center = pos
+        self.rect.center = self.pos
         self.speed = random.randint(1,10)
 
-    def move_fish(self):
+    def move_object(self):
         if self.rect.x  <= 0 - self.rect.width:
-            self.rect.x = game_width
-            self.rect.y = random.randint(self.rect.height, (game_height-self.rect.height))
+            self.rect.x = GAME_WIDTH
+            self.rect.y = random.randint(self.rect.height, (GAME_HEIGHT-self.rect.height))
             self.randomize_size = random.randint(10,100)
-            self.size = [self.randomize_size*2.2,self.randomize_size]
+            self.size = [self.randomize_size*3,self.randomize_size]
+            self.image = pygame.transform.scale(self.image, (self.size[0], self.size[1]))
         else:
             self.rect.x -= self.speed
 
-class Shark(Fish):
-    def __init__(self,pos):
-        super().__init__(pos)
-        self.type = 'shark'
+class Fish(Ocean):
+    def __init__(self,image):
+        super().__init__(image)
+        self.image = pygame.transform.flip(image, True, False)
+        self.image = pygame.transform.scale(self.image, (self.size[0], self.size[1]))
+
+class Shark(Ocean):
+    def __init__(self,image):
+        super().__init__(image)
         self.size = [400,150]
-        self.image = pygame.Surface(self.size)
-        self.image.fill((0, 0, 255))
+        self.image = pygame.transform.scale(self.image, (self.size[0], self.size[1]))
         self.speed = 30
         self.show_wait = 0
         self.show = False
         self.randomSet = random.randint(1,2000)
 
-    def move_fish(self):
-        print('Random: ',self.randomSet)
+    def move_object(self):
+        print('Random: ',self.randomSet, self.show_wait)
+        
         if self.show_wait == self.randomSet:
             self.show = True
             self.show_wait = 0 
@@ -49,8 +54,8 @@ class Shark(Fish):
         elif self.show == True and self.rect.x <= (0-self.size[0]):
             self.show = False
             self.randomSet = random.randint(1,2000)
-            self.rect.x = game_width
-            self.rect.y = random.randint(self.rect.height, (game_height-self.rect.height))
+            self.rect.x = GAME_WIDTH
+            self.rect.y = random.randint(self.rect.height, (GAME_HEIGHT-self.rect.height))
         else:
             self.show_wait += 1
         
@@ -58,23 +63,26 @@ def main():
 
     pygame.init()
 
-    screen = pygame.display.set_mode((game_width, game_height))
+    screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
     background_image = pygame.image.load('My_images/2_game_background.png').convert_alpha()
-    background_image = pygame.transform.scale(background_image, (game_width, game_height))
+    background_image = pygame.transform.scale(background_image, (GAME_WIDTH, GAME_HEIGHT))
+    shark_image = pygame.image.load('My_images/shark.png').convert_alpha()
 
-    fis
+    # create all fish images
+    fish_image = {}
+    for i in range(5):
+        fish_image['fish_%d'%i] = pygame.image.load('My_images/fish_%d.png' % i).convert_alpha()
 
     pygame.display.set_caption('Dangerous Diving')
 
     # Game initialization
     smallFish = []
-    shark = Shark([game_width+100,100])
+    shark = Shark(shark_image)
+ 
     fish_group = pygame.sprite.Group()
 
-    for i in range(7):
-        randomStagger = random.randint(200,500)
-        randomY = random.randint(0,game_height)
-        smallFish.append(Fish([game_width+randomStagger,randomY]))
+    for i in range(len(fish_image)):
+        smallFish.append(Fish(fish_image['fish_%d'%i]))
         fish_group.add(smallFish[i])
 
     fish_group.add(shark)
@@ -88,9 +96,9 @@ def main():
 
         # Game logic
         for fish in smallFish:
-            fish.move_fish()
+            fish.move_object()
         
-        shark.move_fish()
+        shark.move_object()
 
         # Draw background
         screen.blit(background_image,[0,0])
