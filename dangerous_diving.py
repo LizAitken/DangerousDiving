@@ -62,11 +62,9 @@ def main():
     background_image = pygame.image.load('My_images/2_game_background.png').convert_alpha()
     background_image = pygame.transform.scale(background_image, (game_width, game_height))
 
-
-
+    fis
 
     pygame.display.set_caption('Dangerous Diving')
-    clock = pygame.time.Clock()
 
     # Game initialization
     smallFish = []
