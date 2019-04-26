@@ -238,16 +238,6 @@ class Boxes(pygame.sprite.Sprite):
 
 #         self.image.fill(((255, 0, 0)))
 
-
-
-
-
-
-
-
-
-
-
 def main():
 
     pygame.init()
@@ -333,6 +323,7 @@ def main():
         health_group.draw(screen)
         
         pygame.display.update()
+        # clock.tick(60)
 
     pygame.quit()
 
