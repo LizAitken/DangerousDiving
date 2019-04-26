@@ -43,17 +43,29 @@ class Player(pygame.sprite.Sprite):
 
 
 class Boxes(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, image, pos):
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.Surface([200, 60])
-            self.image.fill((255, 255, 255))
+            color = self.image.fill((255, 255, 255))
             self.rect = self.image.get_rect()
             self.rect.center = pos
+            
 
-# class Health(Boxes):
-#     def __init__(self, pos):
+class HealthWhite(pygame.sprite.Sprite):
+    def __init__(self, image, pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([200, 60])
+        self.image.fill((255, 255, 255))
+        self.rect = self.image.get_rect()
+        self.rect.center = pos
 
-#         self.image.fill(((255, 0, 0)))
+class HealthRed(pygame.sprite.Sprite):
+    def __init__(self, image, pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([200, 60])
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.center = pos
 
 
 
@@ -71,7 +83,9 @@ def main():
     # Our Player
     player = Player(185, 320)
     # Our Health_box
-    white_box = Boxes([1038, 605])
+    # white_box = HealthWhite([1038, 605])
+    # green_box = HealthGreen([1038, 605])
+    # red_box = HealthRed([1038, 605])
     # Adding the player to a group
     player_group = pygame.sprite.Group()
     player_group.add(player)
