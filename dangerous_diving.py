@@ -8,32 +8,32 @@ GAME_HEIGHT = 648
 class Ocean(pygame.sprite.Sprite):
     def __init__(self,image):
         pygame.sprite.Sprite.__init__(self)
-        # size is set by width then height
         self.randomize_size = random.randint(10,100)
+        # size is set by width then height
         self.size = [self.randomize_size*3,self.randomize_size]
         self.score = self.size[0] * self.size[1]
         self.pos = [GAME_WIDTH + self.size[0],random.randint(200,500)]
         self.image = image
+        self.image_orginal = image
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         self.speed = random.randint(1,10)
 
     def move_object(self):
-        if self.rect.x  <= 0 - self.rect.width:
+        if self.rect.x  <= 0 - self.size[0]:
             self.rect.x = GAME_WIDTH
-            self.rect.y = random.randint(self.rect.height, (GAME_HEIGHT-self.rect.height))
+            self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
             self.randomize_size = random.randint(10,100)
             self.size = [self.randomize_size*3,self.randomize_size]
-            self.image = pygame.transform.scale(self.image, (self.size[0], self.size[1]))
+            self.image = pygame.transform.scale(self.image_original, (self.size[0], self.size[1]))
         else:
             self.rect.x -= self.speed
 
 class Fish(Ocean):
     def __init__(self,image):
         super().__init__(image)
-        self.image = pygame.transform.flip(image, True, False)
         self.image = pygame.transform.scale(self.image, (self.size[0], self.size[1]))
-
+        self.image_original = image
 class Shark(Ocean):
     def __init__(self,image):
         super().__init__(image)
@@ -55,7 +55,7 @@ class Shark(Ocean):
             self.show = False
             self.randomSet = random.randint(1,2000)
             self.rect.x = GAME_WIDTH
-            self.rect.y = random.randint(self.rect.height, (GAME_HEIGHT-self.rect.height))
+            self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
         else:
             self.show_wait += 1
 
@@ -111,7 +111,7 @@ class Jellyfish(Ocean):
             self.show = False
             self.randomSet = random.randint(1,2000)
             self.rect.x = GAME_WIDTH
-            self.rect.y = random.randint(self.rect.height, (GAME_HEIGHT-self.rect.height))
+            self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
         else:
             self.show_wait += 1
 
@@ -150,13 +150,14 @@ class Coin(Ocean):
         self.index = 0
         self.stagger = 0
         self.image = self.images[self.index]
+        self.image_original = self.images[0]
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         self.speed = 2
         self.show_wait = 0
         self.show = False
         self.direction = 'S'
-        self.randomSet = random.randint(1,2000)
+        self.randomSet = 20#random.randint(500,2000)
 
     def update(self):
         if self.stagger == 3:
