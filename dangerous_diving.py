@@ -233,10 +233,6 @@ class Boxes(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.center = pos
 
-# class Health(Boxes):
-#     def __init__(self, pos):
-
-#         self.image.fill(((255, 0, 0)))
 
 def main():
 
@@ -248,6 +244,8 @@ def main():
     shark_image = pygame.image.load('My_images/shark.png').convert_alpha()
     jellyfish_image = pygame.image.load('My_images/shark.png').convert_alpha()
     pygame.display.set_caption('Dangerous Diving')
+    clock = pygame.time.Clock()
+
 
     # create all fish images
     fish_image = {}
@@ -279,13 +277,16 @@ def main():
     health_group = pygame.sprite.Group()
     health_group.add(white_box)
 
-    stop_game = False
+    
     # Game initialization
-    while not stop_game:
+    running = True
+    while running:
         for event in pygame.event.get():
             # Event handling
+            if pygame.time.get_ticks() >= 60000:
+                running = False
             if event.type == pygame.QUIT:
-                stop_game = True
+                running = False
             if event.type == pygame.KEYDOWN:
                 # activate the cooresponding speeds
                 # when an arrow key is pressed down
