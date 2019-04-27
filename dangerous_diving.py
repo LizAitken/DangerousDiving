@@ -233,6 +233,35 @@ class Boxes(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.center = pos
 
+#screen.blit(enter_image,[0,0])
+# pygame.time.delay(3000)
+
+def intro_screen():
+    pygame.init()
+
+    screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
+    enter_image = pygame.image.load('My_images/1_game_background.png').convert_alpha()
+    enter_image = pygame.transform.scale(enter_image, [GAME_WIDTH, GAME_HEIGHT])
+    pygame.display.set_caption('Dangerous Diving')
+    clock = pygame.time.Clock()
+    
+    intro = True
+    while intro:
+        for event in pygame.event.get():
+            # print(event)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if pygame.time.get_ticks() >= 5000:
+                intro = False
+        screen.blit(enter_image,[0,0])
+        pygame.display.update()
+        clock.tick(15)
+        
+
+    pygame.quit()
+        #gameDisplay.fill(white)
+
 
 def main():
 
@@ -241,10 +270,14 @@ def main():
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
     background_image = pygame.image.load('My_images/2_game_background.png').convert_alpha()
     background_image = pygame.transform.scale(background_image, (GAME_WIDTH, GAME_HEIGHT))
+
+    # enter_image = pygame.image.load('My_images/1_game_background.png').convert_alpha()
+    # enter_image = pygame.transform.scale(enter_image, [GAME_WIDTH, GAME_HEIGHT])
+
     shark_image = pygame.image.load('My_images/shark.png').convert_alpha()
     jellyfish_image = pygame.image.load('My_images/shark.png').convert_alpha()
     pygame.display.set_caption('Dangerous Diving')
-    clock = pygame.time.Clock()
+    
 
 
     # create all fish images
@@ -283,12 +316,12 @@ def main():
     while running:
         for event in pygame.event.get():
             # Event handling
-            if pygame.time.get_ticks() >= 60000:
+            if pygame.time.get_ticks() >= 50000:
                 running = False
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                # activate the cooresponding speeds
+                # activate the corresponding speeds
                 # when an arrow key is pressed down
                 if event.key == KEY_DOWN:
                     player.speed_y = 20
@@ -316,6 +349,7 @@ def main():
         coin.move_object()
 
         # Draw background
+
         screen.blit(background_image,[0,0])
 
         # Game display
@@ -328,5 +362,6 @@ def main():
 
     pygame.quit()
 
+intro_screen()
 if __name__ == '__main__':
     main()
