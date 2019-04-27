@@ -63,6 +63,15 @@ class Ocean(pygame.sprite.Sprite):
         else:
             self.sprite_speed -= 1
 
+totalscore = 0
+
+def addScore(score):
+    global totalscore
+    totalscore += score
+
+def resetScore():
+    totalscore = 0
+
 class Fish(Ocean):
     def __init__(self,image):
         super().__init__(image)
@@ -73,9 +82,8 @@ class Fish(Ocean):
         self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
         
     def move_object(self):
-
         if self.rect.x  <= 0 - self.size[0]:
-            # addScore(self.score)
+            addScore(self.score)
             self.randomize_size = random.randint(10,100)
             self.size = [self.randomize_size*3,self.randomize_size]
             self.score = self.size[0]*self.size[1]
@@ -285,6 +293,21 @@ class Health(pygame.sprite.Sprite):
     def damage(self,damage):
         self.image = self.images[damage]
 
+class Score(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.score = totalscore
+        #self.spritesheet =  pygame.image.load('My_images/fishSpriteSheet/fishSpritesheet.png').convert_alpha()
+        
+    def show_score(self,screen):
+        font_back = pygame.font.Font('font/videophreak.ttf', 30)
+        font_front = pygame.font.Font('font/videophreak.ttf', 30)
+        text = font_back.render('SCORE  : %d' % totalscore, True, (169,169,169))
+        text2 = font_front.render('SCORE  : %d' % totalscore, True, (255,165,0))
+        #print(text.get_width())
+        screen.blit(text, (GAME_WIDTH/2-text.get_width()/2, 20))
+        screen.blit(text2, (GAME_WIDTH/2-text2.get_width()/2, 22))
+
 def main():
 
     pygame.init()
@@ -326,9 +349,13 @@ def main():
     health_group = pygame.sprite.Group()
     health_group.add(health)
 
+    #Score
+    our_score = Score()
+    our_score_group = pygame.sprite.Group()
+    our_score_group.add(our_score)
+
     stop_game = False
     last = 0
-    score = 0
 
     # Game initialization
     while not stop_game:
@@ -375,14 +402,12 @@ def main():
                 elif 'Shark' in str(thing):
                     player.player_health -= 10
                 elif 'Fish' in str(thing):
-                    print('BEFORE SCORE:',thing.score)
                     thing.score = 0
             if hit_coin == True:
                 if player.player_health < 10:
                     player.player_health += 1
             else:
                 player.player_health -= 1
-                
             if player.player_health < 0:
                 player.player_health = 0
 
@@ -412,7 +437,8 @@ def main():
         ocean_group.draw(screen)
         player_group.draw(screen)
         health_group.draw(screen)
-
+        our_score.show_score(screen)
+        #our_score_group.draw(screen)
         pygame.display.update()
 
     pygame.quit()
