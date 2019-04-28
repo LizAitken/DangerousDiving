@@ -422,7 +422,7 @@ def main():
     last = 0
 
     # Game initialization
-    # game_over = True
+    game_over = True
     running = True
     while running:
         # if game_over:
@@ -433,6 +433,7 @@ def main():
             # Event handling
             if pygame.time.get_ticks() >= 60000:
                 running = False
+                end_screen()
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
@@ -458,8 +459,8 @@ def main():
 
         # Sprite Collision
         if player.player_health <= 0:
-            #pygame.quit()
-            pass
+            pygame.quit()
+            end_screen()
 
         hit = pygame.sprite.spritecollide(player,ocean_group,False)
         if len(hit) != last and len(hit) > 0:
@@ -527,5 +528,5 @@ def main():
 intro_screen()
 if __name__ == '__main__':
     main()
-end_screen()
+
 
