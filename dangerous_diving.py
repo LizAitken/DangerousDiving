@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+from datetime import datetime
 
 GAME_WIDTH = 1152
 GAME_HEIGHT = 648
@@ -8,6 +9,9 @@ GAME_HEIGHT = 648
 # Add in keys
 KEY_UP = 273
 KEY_DOWN = 274
+
+global ticks
+ticks = 0
 
 class Ocean(pygame.sprite.Sprite):
     def __init__(self,image):
@@ -336,8 +340,9 @@ def intro_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if pygame.time.get_ticks() >= 6000:
+            if event.type == pygame.KEYUP:
                 intro = False
+                main()
 
         pygame.display.update()
         clock.tick(6)
@@ -345,6 +350,7 @@ def intro_screen():
     pygame.quit()      
 
 def end_screen():
+    global ticks
     pygame.init()
 
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
@@ -361,6 +367,7 @@ def end_screen():
                 quit()
             if event.type == pygame.KEYUP:
                 run = False
+                ticks = 0
                 main()
 
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
@@ -454,16 +461,25 @@ def main():
     # Game initialization
     game_over = True
     running = True
+
+    start_time = int(time.strftime("%S", time.gmtime()))
+    
     while running:
         # if game_over:
         #     end_screen()
         #     game_over = False
             # Need to add all the sprite groups and code for when player dies so they reset
+
+        #Timer
+        elapsed_time = int(time.strftime("%S", time.gmtime())) 
+        second_timer = elapsed_time - start_time
+
+        if second_timer >= 5:
+            running = False
+            end_screen()
+
         for event in pygame.event.get():
             # Event handling
-            if pygame.time.get_ticks() >= 60000:
-                running = False
-                end_screen()
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
@@ -533,11 +549,6 @@ def main():
         jelly.move_object()
         coin.move_object()
 
-        #Timer
-        ticks = pygame.time.get_ticks()
-        millis = ticks % 1000
-        seconds = int(ticks/1000 % 60)
-        
         # Draw background
         background_image.render()
         background_image.update()
@@ -548,7 +559,7 @@ def main():
         health_group.draw(screen)
         our_score.show_score(screen)
         #our_score_group.draw(screen)
-        draw_text(screen,('%d : %d' % (seconds, millis)), 45, 1030, 20)
+        draw_text(screen,('%d' % (second_timer)), 45, 1030, 20)
 
         pygame.display.update()
 
@@ -556,5 +567,6 @@ def main():
 
 intro_screen()
 if __name__ == '__main__':
-    main()
+#    main()
+    pass
 end_screen()
