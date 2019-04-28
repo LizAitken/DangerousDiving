@@ -80,7 +80,8 @@ class Fish(Ocean):
         self.rect = self.image.get_rect()
         self.rect.x = GAME_WIDTH
         self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
-        
+        self.fish_sound = pygame.mixer.Sound('sounds/chomp.wav')
+
     def move_object(self):
         if self.rect.x  <= 0 - self.size[0]:
             addScore(self.score)
@@ -201,6 +202,8 @@ class Coin(Ocean):
         self.speed = 2
         self.show_random = random.randint(500,1000)
         self.show = True
+        self.coin_sound = pygame.mixer.Sound('sounds/coin_sound.wav')
+
 
     def move_object(self):
 
@@ -273,7 +276,8 @@ class Player(pygame.sprite.Sprite):
             self.image = self.images[self.index]
         else:
             self.move_image += 1
-
+    
+    #def hurt(self):
 
 class Health(pygame.sprite.Sprite):
     def __init__(self,life):
@@ -398,10 +402,11 @@ def main():
                     ocean_group.add(coin)
                     coin.rect.x = 0 - coin.rect.width
                     hit_coin = True
-                    player.score += 10000
+                    thing.coin_sound.play()
                 elif 'Shark' in str(thing):
                     player.player_health -= 10
                 elif 'Fish' in str(thing):
+                    thing.fish_sound.play()
                     thing.score = 0
             if hit_coin == True:
                 if player.player_health < 10:
