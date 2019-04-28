@@ -341,7 +341,7 @@ def intro_screen():
                 pygame.quit()
                 quit()
 
-                if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYUP:
                 intro = False
                 main()
 
@@ -536,6 +536,7 @@ def main():
 
         # Sprite Collision
         if player.player_health <= 0:
+            time.sleep(2)
             lose_screen()
 
         hit = pygame.sprite.spritecollide(player,ocean_group,False)
