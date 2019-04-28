@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 GAME_WIDTH = 1152
 GAME_HEIGHT = 648
@@ -276,7 +277,6 @@ class Player(pygame.sprite.Sprite):
             self.image = self.images[self.index]
         else:
             self.move_image += 1
-    
     #def hurt(self):
 
 class Health(pygame.sprite.Sprite):
@@ -365,23 +365,54 @@ def end_screen():
 
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
         draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
+
         pygame.display.update()
         
     pygame.quit()
+
+# Side scroll from : https://gamedev.stackexchange.com/questions/126046/how-to-make-a-moving-background-with-pygame
+class Background():
+    def __init__(self,surface):
+        self.bgimage = pygame.image.load('My_images/2_game_background.png')
+        self.rectBGimg = self.bgimage.get_rect()
+        self.bgimage = pygame.transform.scale(self.bgimage, (GAME_WIDTH,GAME_HEIGHT))
+        self.rectBGimg = self.bgimage.get_rect()
+        self.surface = surface
+        self.bgY1 = 0
+        self.bgX1 = 0
+
+        self.bgY2 = 0
+        self.bgX2 = self.rectBGimg.width
+
+        self.movingUpSpeed = 2
+
+    def update(self):
+        self.bgX1 -= self.movingUpSpeed
+        self.bgX2 -= self.movingUpSpeed
+        if self.bgX1 <= -self.rectBGimg.width:
+            self.bgX1 = self.rectBGimg.width
+        if self.bgX2 <= -self.rectBGimg.width:
+            self.bgX2 = self.rectBGimg.width
+
+    def render(self):
+        self.surface.blit(self.bgimage, (self.bgX1, self.bgY1))
+        self.surface.blit(self.bgimage, (self.bgX2, self.bgY2))
 
 def main():
 
     pygame.init()
 
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
-    background_image = pygame.image.load('My_images/2_game_background.png').convert_alpha()
-    background_image = pygame.transform.scale(background_image, (GAME_WIDTH, GAME_HEIGHT))
+    background_image = Background(screen)
 
     shark_image = pygame.image.load('My_images/shark.png').convert_alpha()
     jellyfish_image = pygame.image.load('My_images/shark.png').convert_alpha()
     pygame.display.set_caption('Dangerous Diving')
     
-    # clock = pygame.time.Clock()
+    # Main Music
+    pygame.mixer.music.load('sounds/out_of_my_dreams.mp3')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.2)
 
     # create all fish images
     fish_image = {}
@@ -418,7 +449,6 @@ def main():
     our_score_group = pygame.sprite.Group()
     our_score_group.add(our_score)
 
-    stop_game = False
     last = 0
 
     # Game initialization
@@ -459,7 +489,6 @@ def main():
 
         # Sprite Collision
         if player.player_health <= 0:
-            pygame.quit()
             end_screen()
 
         hit = pygame.sprite.spritecollide(player,ocean_group,False)
@@ -496,10 +525,10 @@ def main():
 
         for fish in smallFish:
             fish.move_object()
-
+        
+        #move gif and move objects
         jelly.move_gif()
         coin.move_gif()
-
         shark.move_object()
         jelly.move_object()
         coin.move_object()
@@ -510,8 +539,8 @@ def main():
         seconds = int(ticks/1000 % 60)
         
         # Draw background
-        
-        screen.blit(background_image,[0,0])
+        background_image.render()
+        background_image.update()
 
         # Game display
         ocean_group.draw(screen)
@@ -520,7 +549,7 @@ def main():
         our_score.show_score(screen)
         #our_score_group.draw(screen)
         draw_text(screen,('%d : %d' % (seconds, millis)), 45, 1030, 20)
-        
+
         pygame.display.update()
 
     pygame.quit()
@@ -528,5 +557,4 @@ def main():
 intro_screen()
 if __name__ == '__main__':
     main()
-
-
+end_screen()
