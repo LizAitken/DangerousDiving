@@ -363,9 +363,8 @@ def end_screen():
                 run = False
                 main()
 
-        draw_text(screen,('Your score: '), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
-        draw_text(screen,('Want to play again?'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
-        draw_text(screen,('Press any key to begin'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 4)
+        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
         pygame.display.update()
         
     pygame.quit()
