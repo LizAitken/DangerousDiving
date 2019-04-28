@@ -1,6 +1,7 @@
 import pygame
 import random
 import os, os.path
+import time, math
 
 GAME_WIDTH = 1152
 GAME_HEIGHT = 648
@@ -233,8 +234,13 @@ class Boxes(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.center = pos
 
-#screen.blit(enter_image,[0,0])
-# pygame.time.delay(3000)
+font_name = pygame.font.match_font('arial')
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, [0,0,0])
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
 
 def intro_screen():
     pygame.init()
@@ -244,19 +250,28 @@ def intro_screen():
     enter_image = pygame.transform.scale(enter_image, [GAME_WIDTH, GAME_HEIGHT])
     pygame.display.set_caption('Dangerous Diving')
     clock = pygame.time.Clock()
+    # old_timer = 0
+    # seconds = clock.tick()/1000
+    # old_timer += seconds
+    # timer = math.trunc(old_timer)
     
     intro = True
     while intro:
+        screen.blit(enter_image,[0,0])
         for event in pygame.event.get():
-            # print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if pygame.time.get_ticks() >= 5000:
+            if pygame.time.get_ticks() >= 6000:
                 intro = False
-        screen.blit(enter_image,[0,0])
+
+        # ticks = pygame.time.get_ticks()
+        # millis = ticks % 1000
+        # seconds = int(ticks/1000 % 60)
+        # screen.blit(enter_image,[0,0])
+        # draw_text(screen,('%d : %d' % (seconds, millis)), 64, GAME_WIDTH / 2, GAME_HEIGHT / 4)
         pygame.display.update()
-        clock.tick(15)
+        clock.tick(6)
         
 
     pygame.quit()
@@ -278,6 +293,8 @@ def main():
     jellyfish_image = pygame.image.load('My_images/shark.png').convert_alpha()
     pygame.display.set_caption('Dangerous Diving')
     
+    #timer
+    # clock = pygame.time.Clock()
 
 
     # create all fish images
@@ -348,14 +365,20 @@ def main():
         jelly.move_object()
         coin.move_object()
 
+        #Timer
+        ticks = pygame.time.get_ticks()
+        millis = ticks % 1000
+        seconds = int(ticks/1000 % 60)
+        
         # Draw background
-
+        
         screen.blit(background_image,[0,0])
 
         # Game display
         ocean_group.draw(screen)
         player_group.draw(screen)
         health_group.draw(screen)
+        draw_text(screen,('%d : %d' % (seconds, millis)), 45, 1030, 20)
         
         pygame.display.update()
         # clock.tick(60)
