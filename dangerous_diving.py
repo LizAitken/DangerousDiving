@@ -312,6 +312,64 @@ class Score(pygame.sprite.Sprite):
         screen.blit(text, (GAME_WIDTH/2-text.get_width()/2, 20))
         screen.blit(text2, (GAME_WIDTH/2-text2.get_width()/2, 22))
 
+font_name = pygame.font.match_font('arial')
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, [0,0,0])
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
+
+def intro_screen():
+    pygame.init()
+
+    screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
+    enter_image = pygame.image.load('My_images/1_game_background.png').convert_alpha()
+    enter_image = pygame.transform.scale(enter_image, [GAME_WIDTH, GAME_HEIGHT])
+    pygame.display.set_caption('Dangerous Diving')
+    clock = pygame.time.Clock()
+    intro = True
+
+    while intro:
+        screen.blit(enter_image,[0,0])
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if pygame.time.get_ticks() >= 6000:
+                intro = False
+
+        pygame.display.update()
+        clock.tick(6)
+        
+    pygame.quit()      
+
+def end_screen():
+    pygame.init()
+
+    screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
+    end_image = pygame.image.load('My_images/4_game_background.png').convert_alpha()
+    end_image = pygame.transform.scale(end_image, [GAME_WIDTH, GAME_HEIGHT])
+    pygame.display.set_caption('Dangerous Diving')
+    
+    run = True
+    while run:
+        screen.blit(end_image,[0,0])
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYUP:
+                run = False
+                main()
+                
+        draw_text(screen,('Your score: '), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
+        draw_text(screen,('Want to play again?'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
+        draw_text(screen,('Press any key to begin'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 4)
+        pygame.display.update()
+        
+    pygame.quit()
+
 def main():
 
     pygame.init()
@@ -319,9 +377,12 @@ def main():
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
     background_image = pygame.image.load('My_images/2_game_background.png').convert_alpha()
     background_image = pygame.transform.scale(background_image, (GAME_WIDTH, GAME_HEIGHT))
+
     shark_image = pygame.image.load('My_images/shark.png').convert_alpha()
     jellyfish_image = pygame.image.load('My_images/shark.png').convert_alpha()
     pygame.display.set_caption('Dangerous Diving')
+    
+    # clock = pygame.time.Clock()
 
     # create all fish images
     fish_image = {}
@@ -362,13 +423,21 @@ def main():
     last = 0
 
     # Game initialization
-    while not stop_game:
+    # game_over = True
+    running = True
+    while running:
+        # if game_over:
+        #     end_screen()
+        #     game_over = False
+            # Need to add all the sprite groups and code for when player dies so they reset
         for event in pygame.event.get():
             # Event handling
+            if pygame.time.get_ticks() >= 50000:
+                running = False
             if event.type == pygame.QUIT:
-                stop_game = True
+                running = False
             if event.type == pygame.KEYDOWN:
-                # activate the cooresponding speeds
+                # activate the corresponding speeds
                 # when an arrow key is pressed down
                 if event.key == KEY_DOWN:
                     player.speed_y = 20
@@ -435,7 +504,13 @@ def main():
         jelly.move_object()
         coin.move_object()
 
+        #Timer
+        ticks = pygame.time.get_ticks()
+        millis = ticks % 1000
+        seconds = int(ticks/1000 % 60)
+        
         # Draw background
+        
         screen.blit(background_image,[0,0])
 
         # Game display
@@ -444,9 +519,14 @@ def main():
         health_group.draw(screen)
         our_score.show_score(screen)
         #our_score_group.draw(screen)
+        draw_text(screen,('%d : %d' % (seconds, millis)), 45, 1030, 20)
+        
         pygame.display.update()
 
     pygame.quit()
 
+intro_screen()
 if __name__ == '__main__':
     main()
+end_screen()
+
