@@ -324,7 +324,7 @@ def intro_screen():
     pygame.init()
 
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
-    enter_image = pygame.image.load('My_images/1_game_background.png').convert_alpha()
+    enter_image = pygame.image.load('My_images/1_game_backgroundREDO.png').convert_alpha()
     enter_image = pygame.transform.scale(enter_image, [GAME_WIDTH, GAME_HEIGHT])
     pygame.display.set_caption('Dangerous Diving')
     clock = pygame.time.Clock()
@@ -361,11 +361,11 @@ def end_screen():
                 quit()
             if event.type == pygame.KEYUP:
                 run = False
-                end_screen()
-                
-        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
-        draw_text(screen,('Want to play again?'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
-        draw_text(screen,('Press any key to begin'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 4)
+                main()
+
+        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
+
         pygame.display.update()
         
     pygame.quit()
@@ -452,7 +452,7 @@ def main():
     last = 0
 
     # Game initialization
-    # game_over = True
+    game_over = True
     running = True
     while running:
         # if game_over:
@@ -461,8 +461,9 @@ def main():
             # Need to add all the sprite groups and code for when player dies so they reset
         for event in pygame.event.get():
             # Event handling
-            if pygame.time.get_ticks() >= 50000:
+            if pygame.time.get_ticks() >= 60000:
                 running = False
+                end_screen()
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
@@ -553,7 +554,7 @@ def main():
 
     pygame.quit()
 
-#intro_screen()
+intro_screen()
 if __name__ == '__main__':
     main()
 end_screen()
