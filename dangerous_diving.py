@@ -449,7 +449,6 @@ def main():
     our_score_group = pygame.sprite.Group()
     our_score_group.add(our_score)
 
-    stop_game = False
     last = 0
 
     # Game initialization
