@@ -324,7 +324,7 @@ def intro_screen():
     pygame.init()
 
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
-    enter_image = pygame.image.load('My_images/1_game_background.png').convert_alpha()
+    enter_image = pygame.image.load('My_images/1_game_backgroundREDO.png').convert_alpha()
     enter_image = pygame.transform.scale(enter_image, [GAME_WIDTH, GAME_HEIGHT])
     pygame.display.set_caption('Dangerous Diving')
     clock = pygame.time.Clock()
