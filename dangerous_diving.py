@@ -1,7 +1,5 @@
 import pygame
 import random
-import os, os.path
-import time, math
 
 GAME_WIDTH = 1152
 GAME_HEIGHT = 648
@@ -14,7 +12,7 @@ class Ocean(pygame.sprite.Sprite):
     def __init__(self,image):
         pygame.sprite.Sprite.__init__(self)
         self.randomize_size = random.randint(10,100)
-        
+
         # Below are image initializers
         self.size = [self.randomize_size*3,self.randomize_size]
         self.score = self.size[0] * self.size[1]
@@ -32,17 +30,8 @@ class Ocean(pygame.sprite.Sprite):
         self.show = False
         self.show_wait = 0
         self.show_random = random.randint(1,2000) 
-    def move_object(self):
-
-        if self.rect.x  <= 0 - self.size[0]:
-            self.rect.x = GAME_WIDTH
-            self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
-            self.randomize_size = random.randint(10,100)
-            self.size = [self.randomize_size*3,self.randomize_size]
-            self.image = pygame.transform.scale(self.image_original, (self.size[0], self.size[1]))
-        else:
-            self.rect.x -= self.speed
-            
+        self.radius = 3
+        self.total_score = 0
 
         # if self.show_wait == self.show_random:
         #     self.show = True
@@ -74,12 +63,37 @@ class Ocean(pygame.sprite.Sprite):
         else:
             self.sprite_speed -= 1
 
+totalscore = 0
+
+def addScore(score):
+    global totalscore
+    totalscore += score
+
+def resetScore():
+    totalscore = 0
+
 class Fish(Ocean):
     def __init__(self,image):
         super().__init__(image)
         self.image = pygame.transform.scale(image, (self.size[0], self.size[1]))
         self.image_original = image
-        self.show_immediately_after_off_screen = True
+        self.rect = self.image.get_rect()
+        self.rect.x = GAME_WIDTH
+        self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
+        self.fish_sound = pygame.mixer.Sound('sounds/chomp.wav')
+
+    def move_object(self):
+        if self.rect.x  <= 0 - self.size[0]:
+            addScore(self.score)
+            self.randomize_size = random.randint(10,100)
+            self.size = [self.randomize_size*3,self.randomize_size]
+            self.score = self.size[0]*self.size[1]
+            self.image = pygame.transform.scale(self.image_original, (self.size[0], self.size[1]))
+            self.rect = self.image.get_rect()
+            self.rect.x = GAME_WIDTH
+            self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
+        else:
+            self.rect.x -= self.speed
 
 class Shark(Ocean):
     def __init__(self,image):
@@ -88,9 +102,11 @@ class Shark(Ocean):
         self.image = pygame.transform.scale(self.image, (self.size[0], self.size[1]))
         self.image_original = image
         self.speed = 30
+        self.rect = self.image.get_rect()
+        self.rect.x = 2000
+        self.rect.y = 2000
 
     def move_object(self):
-
         if self.show_wait == self.show_random:
             self.show = True
             self.show_wait = 0 
@@ -185,20 +201,45 @@ class Coin(Ocean):
         self.rect.center = self.pos
         self.speed = 2
         self.show_random = random.randint(500,1000)
+        self.show = True
+        self.coin_sound = pygame.mixer.Sound('sounds/coin_sound.wav')
+
+
+    def move_object(self):
+
+        if self.show_wait == self.show_random:
+            self.show = True
+            self.show_wait = 0 
+        elif self.show == True and self.rect.x > (0-self.size[0]):
+            self.rect.x -= self.speed
+        elif self.show == True and self.rect.x <= (0-self.size[0]):
+            self.show = False
+            self.show_random = random.randint(500,1000)
+            self.rect.x = GAME_WIDTH
+            self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
+        else:
+            self.show_wait += 1
+
+    def animation(self):
+        pass
+        
 
 class Game():
     pass
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
+
         pygame.sprite.Sprite.__init__(self)
-        # self.image = pygame.Surface([252, 60])
-        # self.image.fill((0, 255, 0))
+        self.player_health = 10
+        self.score = 0
         self.x = x
         self.y = y
-        # self.speed_x = 0
+
+        self.size = [250,50]
         self.speed_y = 0
         self.radius = 50
+
         #Animation
         self.index = 0
         self.images = []
@@ -206,11 +247,17 @@ class Player(pygame.sprite.Sprite):
         self.images.append(pygame.image.load('My_images/divercrop_5pixel.png'))
         self.images.append(pygame.image.load('My_images/divercrop_4pixel.png'))
         self.images.append(pygame.image.load('My_images/divercrop_2pixellower.png'))
+
+        for i in range(len(self.images)):
+            self.images[i] = pygame.transform.scale(self.images[i], (self.size[0], self.size[1]))
+
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
         self.rect.center = [self.x, self.y]
-    
+        self.move_image = 0
+
     def update(self):
+
         barrier_top = 22
         barrier_bottom = 580
         if self.rect.y >= barrier_top and self.rect.y <= barrier_bottom:
@@ -219,20 +266,51 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = barrier_top
         elif self.rect.y > barrier_bottom:
             self.rect.y = barrier_bottom
+
         #Animation
-        self.index += 1
-        if self.index >= len(self.images):
-            self.index = 0
-        self.image = self.images[self.index]
+        if self.move_image == 3:
+            self.move_image = 0
+            self.index += 1
+            if self.index >= len(self.images):
+                self.index = 0
+            self.image = self.images[self.index]
+        else:
+            self.move_image += 1
+    
+    #def hurt(self):
 
+class Health(pygame.sprite.Sprite):
+    def __init__(self,life):
+        pygame.sprite.Sprite.__init__(self)
+        # Life has to be set from 1-10
+        self.life = life
+        self.images = []
 
-class Boxes(pygame.sprite.Sprite):
-    def __init__(self, pos):
-            pygame.sprite.Sprite.__init__(self)
-            self.image = pygame.Surface([200, 60])
-            self.image.fill((255, 255, 255))
-            self.rect = self.image.get_rect()
-            self.rect.center = pos
+        for i in range(self.life + 1):
+            self.images.append(pygame.image.load('My_images/life/life%d.png'%i).convert_alpha())
+        self.image = self.images[10]
+        #self.image.fill((255, 255, 255))
+        self.index = 0
+        self.rect = self.image.get_rect()
+        self.rect.center = [GAME_WIDTH - (self.rect.width/2) -20, GAME_HEIGHT - (self.rect.height/2) - 20]
+    
+    def damage(self,damage):
+        self.image = self.images[damage]
+
+class Score(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.score = totalscore
+        #self.spritesheet =  pygame.image.load('My_images/fishSpriteSheet/fishSpritesheet.png').convert_alpha()
+        
+    def show_score(self,screen):
+        font_back = pygame.font.Font('font/videophreak.ttf', 30)
+        font_front = pygame.font.Font('font/videophreak.ttf', 30)
+        text = font_back.render('SCORE  : %d' % totalscore, True, (169,169,169))
+        text2 = font_front.render('SCORE  : %d' % totalscore, True, (255,165,0))
+        #print(text.get_width())
+        screen.blit(text, (GAME_WIDTH/2-text.get_width()/2, 20))
+        screen.blit(text2, (GAME_WIDTH/2-text2.get_width()/2, 22))
 
 font_name = pygame.font.match_font('arial')
 def draw_text(surf, text, size, x, y):
@@ -326,17 +404,24 @@ def main():
     ocean_group.add(coin)
 
     # Our Player
-    player = Player(185, 320)
+    player = Player(185, GAME_HEIGHT/2)
     # Our Health_box
-    white_box = Boxes([1038, 605])
+    health = Health(player.player_health)
     # Adding the player to a group
     player_group = pygame.sprite.Group()
     player_group.add(player)
     # Adding the health box to a group
     health_group = pygame.sprite.Group()
-    health_group.add(white_box)
+    health_group.add(health)
 
-    
+    #Score
+    our_score = Score()
+    our_score_group = pygame.sprite.Group()
+    our_score_group.add(our_score)
+
+    stop_game = False
+    last = 0
+
     # Game initialization
     # game_over = True
     running = True
@@ -366,7 +451,47 @@ def main():
                 elif event.key == KEY_UP:
                     player.speed_y = 0
 
-        # Game logic
+        ################
+        ################
+        ## Game logic ##
+        ################
+        ################
+
+        # Sprite Collision
+        if player.player_health <= 0:
+            #pygame.quit()
+            pass
+
+        hit = pygame.sprite.spritecollide(player,ocean_group,False)
+        if len(hit) != last and len(hit) > 0:
+            hit_coin = False
+            for thing in hit:
+                if 'Coin' in str(thing):
+                    ocean_group.remove(coin)
+                    ocean_group.add(coin)
+                    coin.rect.x = 0 - coin.rect.width
+                    hit_coin = True
+                    thing.coin_sound.play()
+                elif 'Shark' in str(thing):
+                    player.player_health -= 10
+                elif 'Fish' in str(thing):
+                    thing.fish_sound.play()
+                    thing.score = 0
+            if hit_coin == True:
+                if player.player_health < 10:
+                    player.player_health += 1
+            else:
+                player.player_health -= 1
+            if player.player_health < 0:
+                player.player_health = 0
+
+            health.damage(player.player_health)
+
+        last = len(hit)
+
+        #print(player.score)
+
+        # UPDATES
         player_group.update()
 
         for fish in smallFish:
@@ -392,10 +517,11 @@ def main():
         ocean_group.draw(screen)
         player_group.draw(screen)
         health_group.draw(screen)
+        our_score.show_score(screen)
+        #our_score_group.draw(screen)
         draw_text(screen,('%d : %d' % (seconds, millis)), 45, 1030, 20)
         
         pygame.display.update()
-        # clock.tick(60)
 
     pygame.quit()
 
