@@ -250,12 +250,8 @@ def intro_screen():
     enter_image = pygame.transform.scale(enter_image, [GAME_WIDTH, GAME_HEIGHT])
     pygame.display.set_caption('Dangerous Diving')
     clock = pygame.time.Clock()
-    # old_timer = 0
-    # seconds = clock.tick()/1000
-    # old_timer += seconds
-    # timer = math.trunc(old_timer)
-    
     intro = True
+
     while intro:
         screen.blit(enter_image,[0,0])
         for event in pygame.event.get():
@@ -265,18 +261,36 @@ def intro_screen():
             if pygame.time.get_ticks() >= 6000:
                 intro = False
 
-        # ticks = pygame.time.get_ticks()
-        # millis = ticks % 1000
-        # seconds = int(ticks/1000 % 60)
-        # screen.blit(enter_image,[0,0])
-        # draw_text(screen,('%d : %d' % (seconds, millis)), 64, GAME_WIDTH / 2, GAME_HEIGHT / 4)
         pygame.display.update()
         clock.tick(6)
         
+    pygame.quit()      
 
+def end_screen():
+    pygame.init()
+
+    screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
+    end_image = pygame.image.load('My_images/4_game_background.png').convert_alpha()
+    end_image = pygame.transform.scale(end_image, [GAME_WIDTH, GAME_HEIGHT])
+    pygame.display.set_caption('Dangerous Diving')
+    
+    run = True
+    while run:
+        screen.blit(end_image,[0,0])
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYUP:
+                run = False
+                main()
+                
+        draw_text(screen,('Your score: '), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
+        draw_text(screen,('Want to play again?'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
+        draw_text(screen,('Press any key to begin'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 4)
+        pygame.display.update()
+        
     pygame.quit()
-        #gameDisplay.fill(white)
-
 
 def main():
 
@@ -286,16 +300,11 @@ def main():
     background_image = pygame.image.load('My_images/2_game_background.png').convert_alpha()
     background_image = pygame.transform.scale(background_image, (GAME_WIDTH, GAME_HEIGHT))
 
-    # enter_image = pygame.image.load('My_images/1_game_background.png').convert_alpha()
-    # enter_image = pygame.transform.scale(enter_image, [GAME_WIDTH, GAME_HEIGHT])
-
     shark_image = pygame.image.load('My_images/shark.png').convert_alpha()
     jellyfish_image = pygame.image.load('My_images/shark.png').convert_alpha()
     pygame.display.set_caption('Dangerous Diving')
     
-    #timer
     # clock = pygame.time.Clock()
-
 
     # create all fish images
     fish_image = {}
@@ -329,8 +338,13 @@ def main():
 
     
     # Game initialization
+    # game_over = True
     running = True
     while running:
+        # if game_over:
+        #     end_screen()
+        #     game_over = False
+            # Need to add all the sprite groups and code for when player dies so they reset
         for event in pygame.event.get():
             # Event handling
             if pygame.time.get_ticks() >= 50000:
@@ -388,3 +402,5 @@ def main():
 intro_screen()
 if __name__ == '__main__':
     main()
+end_screen()
+
