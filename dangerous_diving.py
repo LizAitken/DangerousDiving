@@ -336,15 +336,19 @@ def intro_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if pygame.time.get_ticks() >= 6000:
-                intro = False
+            # if pygame.time.get_ticks() >= 6000:
+            #     intro = False
+            #     main()
+            if event.type == pygame.KEYUP:
+               intro = False
+               main()
 
         pygame.display.update()
         clock.tick(6)
         
     pygame.quit()      
 
-def end_screen():
+def win_screen():
     pygame.init()
 
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
@@ -365,6 +369,34 @@ def end_screen():
 
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
         draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
+        draw_text(screen,('You Won!'), 60, GAME_WIDTH / 2, 400)
+
+        pygame.display.update()
+        
+    pygame.quit()
+
+def lose_screen():
+    pygame.init()
+
+    screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
+    end_image = pygame.image.load('My_images/4_game_background.png').convert_alpha()
+    end_image = pygame.transform.scale(end_image, [GAME_WIDTH, GAME_HEIGHT])
+    pygame.display.set_caption('Dangerous Diving')
+    
+    run = True
+    while run:
+        screen.blit(end_image,[0,0])
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYUP:
+                run = False
+                main()
+
+        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
+        draw_text(screen,('You Lost!'), 60, GAME_WIDTH / 2, 400)
 
         pygame.display.update()
         
@@ -463,7 +495,7 @@ def main():
             # Event handling
             if pygame.time.get_ticks() >= 60000:
                 running = False
-                end_screen()
+                win_screen()
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
@@ -489,7 +521,7 @@ def main():
 
         # Sprite Collision
         if player.player_health <= 0:
-            end_screen()
+            lose_screen()
 
         hit = pygame.sprite.spritecollide(player,ocean_group,False)
         if len(hit) != last and len(hit) > 0:
