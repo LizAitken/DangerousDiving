@@ -284,7 +284,7 @@ def end_screen():
             if event.type == pygame.KEYUP:
                 run = False
                 main()
-                
+
         draw_text(screen,('Your score: '), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
         draw_text(screen,('Want to play again?'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
         draw_text(screen,('Press any key to begin'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 4)
@@ -347,7 +347,7 @@ def main():
             # Need to add all the sprite groups and code for when player dies so they reset
         for event in pygame.event.get():
             # Event handling
-            if pygame.time.get_ticks() >= 50000:
+            if pygame.time.get_ticks() >= 60000:
                 running = False
             if event.type == pygame.QUIT:
                 running = False
