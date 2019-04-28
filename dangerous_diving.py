@@ -472,9 +472,9 @@ def main():
 
         #Timer
         elapsed_time = int(time.strftime("%S", time.gmtime())) 
-        second_timer = elapsed_time - start_time
+        second_timer = elapsed_time - start_time + 1
 
-        if second_timer >= 5:
+        if second_timer >= 60:
             running = False
             end_screen()
 
