@@ -341,7 +341,7 @@ def intro_screen():
                 pygame.quit()
                 quit()
 
-                if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYUP:
                 intro = False
                 main()
 
@@ -492,8 +492,9 @@ def main():
     game_over = True
     running = True
 
-    start_time = int(time.strftime("%S", time.gmtime()))
-    
+    second_start = int(time.strftime("%S", time.gmtime()))
+    minute_start = int(time.strftime("%M", time.gmtime()))
+
     while running:
         # if game_over:
         #     end_screen()
@@ -501,12 +502,16 @@ def main():
             # Need to add all the sprite groups and code for when player dies so they reset
 
         #Timer
-        elapsed_time = int(time.strftime("%S", time.gmtime())) 
-        second_timer = elapsed_time - start_time + 1
+
+        elpased_second = int(time.strftime("%S", time.gmtime()))
+        elapsed_minute = int(time.strftime("%M", time.gmtime()))
+
+        minute_timer = elapsed_minute - minute_start
+        second_timer = elpased_second - second_start + (minute_timer * 60)
 
         if second_timer >= 60:
             running = False
-            end_screen()
+            win_screen()
 
         for event in pygame.event.get():
             # Event handling
