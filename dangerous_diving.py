@@ -316,7 +316,7 @@ class Score(pygame.sprite.Sprite):
         screen.blit(text, (GAME_WIDTH/2-text.get_width()/2, 20))
         screen.blit(text2, (GAME_WIDTH/2-text2.get_width()/2, 22))
 
-font_name = pygame.font.match_font('arial')
+font_name = pygame.font.match_font('font/videophreak.ttf')
 def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, [0,0,0])
@@ -398,7 +398,6 @@ def lose_screen():
                 quit()
             if event.type == pygame.KEYUP:
                 run = False
-                ticks = 0
                 totalscore = 0
                 main()
 
