@@ -328,7 +328,6 @@ def draw_text(surf, text, size, x, y, color):
     # Grey - (105,105,105)
     text_surface = font.render(text, True, (255,165,0))
     text_surface2 = font.render(text, True, color)
-
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
 
