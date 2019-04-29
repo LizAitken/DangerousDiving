@@ -370,7 +370,7 @@ def win_screen():
     end_image = pygame.image.load('My_images/4_game_background.png').convert_alpha()
     end_image = pygame.transform.scale(end_image, [GAME_WIDTH, GAME_HEIGHT])
     pygame.display.set_caption('Dangerous Diving')
-    
+
     run = True
     while run:
         screen.blit(end_image,[0,0])
@@ -386,7 +386,7 @@ def win_screen():
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3, (255,255,255))
         draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430, (255,128,0))
         draw_text(screen,('YOU WON!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2, (255,255,255))
-
+        
         pygame.display.update()
         
     pygame.quit()
@@ -415,6 +415,7 @@ def lose_screen():
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3, (255,255,255))
         draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430, (255,128,0))
         draw_text(screen,('YOU LOST!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2, (255,255,255))
+
 
         pygame.display.update()
         
@@ -507,6 +508,7 @@ def main():
     second_start = int(time.strftime("%S", time.gmtime()))
     minute_start = int(time.strftime("%M", time.gmtime()))
 
+
     while running:
 
         #Timer
@@ -550,6 +552,7 @@ def main():
 
         # Sprite Collision
         if player.player_health <= 0:
+            time.sleep(3)
             lose_screen()
 
         hit = pygame.sprite.spritecollide(player,ocean_group,False)
@@ -617,3 +620,4 @@ intro_screen()
 if __name__ == '__main__':
 #    main()
     pass
+
