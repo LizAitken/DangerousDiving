@@ -321,17 +321,19 @@ class Score(pygame.sprite.Sprite):
         screen.blit(text, (GAME_WIDTH/2-text.get_width()/2, 20))
         screen.blit(text2, (GAME_WIDTH/2-text2.get_width()/2, 22))
 
-def draw_text(surf, text, size, x, y):
+def draw_text(surf, text, size, x, y, color):
     font = pygame.font.Font('font/videophreak.ttf', size)
+    # color 
+    # Orange - (255,165,0)
+    # Grey - (105,105,105)
     text_surface = font.render(text, True, (255,165,0))
-    text_surface2 = font.render(text, True, (169,169,169))
+    text_surface2 = font.render(text, True, color)
 
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
 
     surf.blit(text_surface, [text_rect.x + 2,text_rect.y +2])
     surf.blit(text_surface2, text_rect)
-
 
 def intro_screen():
     pygame.init()
@@ -381,9 +383,9 @@ def win_screen():
                 totalscore = 0
                 main()
 
-        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
-        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
-        draw_text(screen,('You Won!'), 60, GAME_WIDTH / 2, 400)
+        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3, (255,255,255))
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430, (255,128,0))
+        draw_text(screen,('YOU WON!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2, (255,255,255))
 
         pygame.display.update()
         
@@ -410,9 +412,9 @@ def lose_screen():
                 totalscore = 0
                 main()
 
-        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
-        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
-        draw_text(screen,('You Lost!'), 60, GAME_WIDTH / 2, 400)
+        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3, (255,255,255))
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430, (255,128,0))
+        draw_text(screen,('YOU LOST!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2, (255,255,255))
 
         pygame.display.update()
         
@@ -605,7 +607,7 @@ def main():
         health_group.draw(screen)
         our_score.show_score(screen)
         #our_score_group.draw(screen)
-        draw_text(screen,('Time Left: %d' % (second_timer)), 40, GAME_WIDTH-160, 10)
+        draw_text(screen,('Time Left: %d' % (second_timer)), 25, GAME_WIDTH-118, 25,(105,105,105))
 
         pygame.display.update()
 
