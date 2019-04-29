@@ -111,8 +111,8 @@ class Shark(Ocean):
         self.image_original = image
         self.speed = 30
         self.rect = self.image.get_rect()
-        self.rect.x = GAME_WIDTH - self.rect.width
-        self.rect.y = 2000
+        self.rect.x = GAME_WIDTH 
+        self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
         self.sound = pygame.mixer.Sound('sounds/shark.wav')
 
     def move_object(self):
