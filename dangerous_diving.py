@@ -72,7 +72,10 @@ totalscore = 0
 
 def addScore(score):
     global totalscore
-    totalscore += score
+    score_sound = pygame.mixer.Sound('sounds/score.wav')
+    if(score > 0):
+        score_sound.play()
+        totalscore += score
 
 def resetScore():
     totalscore = 0
@@ -85,7 +88,7 @@ class Fish(Ocean):
         self.rect = self.image.get_rect()
         self.rect.x = GAME_WIDTH
         self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
-        self.fish_sound = pygame.mixer.Sound('sounds/chomp.wav')
+        self.sound = pygame.mixer.Sound('sounds/chomp.wav')
 
     def move_object(self):
         if self.rect.x  <= 0 - self.size[0]:
@@ -108,10 +111,12 @@ class Shark(Ocean):
         self.image_original = image
         self.speed = 30
         self.rect = self.image.get_rect()
-        self.rect.x = 2000
-        self.rect.y = 2000
+        self.rect.x = GAME_WIDTH 
+        self.rect.y = random.randint(self.size[1], (GAME_HEIGHT-self.size[1]))
+        self.sound = pygame.mixer.Sound('sounds/shark.wav')
 
     def move_object(self):
+        print('Random: ',self.show_random,'Show Shark: ',self.show_wait,'X: ',self.rect.x)
         if self.show_wait == self.show_random:
             self.show = True
             self.show_wait = 0 
@@ -151,6 +156,7 @@ class Jellyfish(Ocean):
         self.rect.center = self.pos
         self.speed = 2
         self.direction = 'S'
+        self.sound = pygame.mixer.Sound('sounds/zap.wav')
 
     def move_object(self):
 
@@ -207,7 +213,7 @@ class Coin(Ocean):
         self.speed = 2
         self.show_random = random.randint(500,1000)
         self.show = True
-        self.coin_sound = pygame.mixer.Sound('sounds/coin_sound.wav')
+        self.sound = pygame.mixer.Sound('sounds/coin_sound.wav')
 
 
     def move_object(self):
@@ -305,7 +311,6 @@ class Score(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.score = totalscore
-        #self.spritesheet =  pygame.image.load('My_images/fishSpriteSheet/fishSpritesheet.png').convert_alpha()
         
     def show_score(self,screen):
         font_back = pygame.font.Font('font/videophreak.ttf', 30)
@@ -316,13 +321,18 @@ class Score(pygame.sprite.Sprite):
         screen.blit(text, (GAME_WIDTH/2-text.get_width()/2, 20))
         screen.blit(text2, (GAME_WIDTH/2-text2.get_width()/2, 22))
 
-font_name = pygame.font.match_font('font/videophreak.ttf')
-def draw_text(surf, text, size, x, y):
-    font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, [0,0,0])
+def draw_text(surf, text, size, x, y, color):
+    font = pygame.font.Font('font/videophreak.ttf', size)
+    # color 
+    # Orange - (255,165,0)
+    # Grey - (105,105,105)
+    text_surface = font.render(text, True, (255,165,0))
+    text_surface2 = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
-    surf.blit(text_surface, text_rect)
+
+    surf.blit(text_surface, [text_rect.x + 2,text_rect.y +2])
+    surf.blit(text_surface2, text_rect)
 
 def intro_screen():
     pygame.init()
@@ -372,10 +382,10 @@ def win_screen():
                 totalscore = 0
                 main()
 
-        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
-        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430)
-        draw_text(screen,('YOU WON!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2)
-
+        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3, (255,255,255))
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430, (255,128,0))
+        draw_text(screen,('YOU WON!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2, (255,255,255))
+        
         pygame.display.update()
         
     pygame.quit()
@@ -401,9 +411,10 @@ def lose_screen():
                 totalscore = 0
                 main()
 
-        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
-        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430)
-        draw_text(screen,('YOU LOST!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2)
+        draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3, (255,255,255))
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430, (255,128,0))
+        draw_text(screen,('YOU LOST!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2, (255,255,255))
+
 
         pygame.display.update()
         
@@ -439,6 +450,7 @@ class Background():
 
 def main():
 
+    # Game initialization
     pygame.init()
 
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
@@ -490,8 +502,6 @@ def main():
 
     last = 0
 
-    # Game initialization
-    game_over = True
     running = True
 
     second_start = int(time.strftime("%S", time.gmtime()))
@@ -505,11 +515,13 @@ def main():
         elapsed_minute = int(time.strftime("%M", time.gmtime()))
 
         minute_timer = elapsed_minute - minute_start
-        second_timer = elpased_second - second_start + (minute_timer * 60)
+        second_timer = 60 - (elpased_second - second_start + (minute_timer * 60))
 
-        if second_timer >= 60:
+        if second_timer == 0:
             running = False
             win_screen()
+            time.sleep(3)
+
 
         for event in pygame.event.get():
             # Event handling
@@ -551,12 +563,15 @@ def main():
                     ocean_group.add(coin)
                     coin.rect.x = 0 - coin.rect.width
                     hit_coin = True
-                    thing.coin_sound.play()
+                    thing.sound.play()
                 elif 'Shark' in str(thing):
                     player.player_health -= 10
+                    thing.sound.play()
                 elif 'Fish' in str(thing):
-                    thing.fish_sound.play()
+                    thing.sound.play()
                     thing.score = 0
+                elif 'Jellyfish' in str(thing):
+                    thing.sound.play()
             if hit_coin == True:
                 if player.player_health < 10:
                     player.player_health += 1
@@ -594,7 +609,7 @@ def main():
         health_group.draw(screen)
         our_score.show_score(screen)
         #our_score_group.draw(screen)
-        draw_text(screen,('%d' % (second_timer)), 45, 1030, 20)
+        draw_text(screen,('Time Left: %d' % (second_timer)), 25, GAME_WIDTH-118, 25,(105,105,105))
 
         pygame.display.update()
 
@@ -604,3 +619,4 @@ intro_screen()
 if __name__ == '__main__':
 #    main()
     pass
+
