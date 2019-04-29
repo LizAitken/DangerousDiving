@@ -354,12 +354,12 @@ def intro_screen():
 
 def win_screen():
     pygame.init()
-
+    global totalscore
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
     end_image = pygame.image.load('My_images/4_game_background.png').convert_alpha()
     end_image = pygame.transform.scale(end_image, [GAME_WIDTH, GAME_HEIGHT])
     pygame.display.set_caption('Dangerous Diving')
-    
+
     run = True
     while run:
         screen.blit(end_image,[0,0])
@@ -369,6 +369,7 @@ def win_screen():
                 quit()
             if event.type == pygame.KEYUP:
                 run = False
+                totalscore = 0
                 main()
 
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
@@ -382,6 +383,7 @@ def win_screen():
 def lose_screen():
     pygame.init()
 
+    global totalscore
     screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
     end_image = pygame.image.load('My_images/4_game_background.png').convert_alpha()
     end_image = pygame.transform.scale(end_image, [GAME_WIDTH, GAME_HEIGHT])
@@ -397,6 +399,7 @@ def lose_screen():
             if event.type == pygame.KEYUP:
                 run = False
                 ticks = 0
+                totalscore = 0
                 main()
 
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
@@ -495,14 +498,10 @@ def main():
     second_start = int(time.strftime("%S", time.gmtime()))
     minute_start = int(time.strftime("%M", time.gmtime()))
 
+
     while running:
-        # if game_over:
-        #     end_screen()
-        #     game_over = False
-            # Need to add all the sprite groups and code for when player dies so they reset
 
         #Timer
-
         elpased_second = int(time.strftime("%S", time.gmtime()))
         elapsed_minute = int(time.strftime("%M", time.gmtime()))
 
@@ -606,4 +605,3 @@ intro_screen()
 if __name__ == '__main__':
 #    main()
     pass
-end_screen()
