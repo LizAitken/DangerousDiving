@@ -373,8 +373,8 @@ def win_screen():
                 main()
 
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
-        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
-        draw_text(screen,('You Won!'), 60, GAME_WIDTH / 2, 400)
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430)
+        draw_text(screen,('YOU WON!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2)
 
         pygame.display.update()
         
@@ -403,8 +403,8 @@ def lose_screen():
                 main()
 
         draw_text(screen,('Your score: %d' % totalscore), 60, GAME_WIDTH / 2, GAME_HEIGHT / 3)
-        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, GAME_HEIGHT / 2)
-        draw_text(screen,('You Lost!'), 60, GAME_WIDTH / 2, 400)
+        draw_text(screen,('Press any key to play again'), 60, GAME_WIDTH / 2, 430)
+        draw_text(screen,('YOU LOST!'), 68, GAME_WIDTH / 2, GAME_HEIGHT / 2)
 
         pygame.display.update()
         
@@ -540,7 +540,7 @@ def main():
 
         # Sprite Collision
         if player.player_health <= 0:
-            time.sleep(2)
+            time.sleep(3)
             lose_screen()
 
         hit = pygame.sprite.spritecollide(player,ocean_group,False)
