@@ -1,13 +1,21 @@
+# Imports from outside libraries
 import pygame
 import random
 import time
-import score as total
 from datetime import datetime
+# Imports addScore(), class Score, and show_score() as total
+import score as total
+# Imports classes: Ocean(parent)- Fish, Shark, Jellyfish, Coin. Move_gif(), move_object(), move_object_diagonally(), update()
 from ocean import *
+# Imports class Player and its update()
 from player import *
+# Imports class Background and its functions- update(), render(). Also within: draw_text() 
 from moving_background import *
+# Imports class Health and its functions- including damage()
 from health import *
+# Imports all information from score
 from score import *
+# Imports dimensions of game and totalscore variable
 from global_constants import *
 
 # Add in keys
