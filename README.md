@@ -11,7 +11,7 @@ Dangerous Diving is a 2D side-scrolling desktop game created with Python and Pyg
 * The player movement is restricted to up and down on the keys
 
 
-#Authors
+# Authors
 ----------
 * Liz Aitken. [GitHub Link] (https://github.com/LizAitken)
 * RJ Salamanca. [GitHub Link] (https://github.com/rjsalamanca) - * Refactoring genius 
